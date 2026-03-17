@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Icy Animations</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Changa+One:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --blue-dark:  #0a1f4e;
+      --blue-mid:   #1a4aad;
+      --blue-light: #4db8ff;
+      --blue-pale:  #a8d8ff;
+      --white:      #e8f4ff;
+      --outline:    #0a1f4e;
+    }
+
+    html, body {
+      width: 100%; min-height: 100%;
+      font-family: 'Bagel Fat One', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── GIF Background ── */
+    .bg {
+      position: fixed; inset: 0; z-index: 0;
+      background: url('https://i.redd.it/8hr60jort3w91.gif') center center / cover no-repeat;
+    }
+    .bg-overlay {
+      position: fixed; inset: 0; z-index: 1;
+      background: rgba(10, 31, 78, 0.45);
+    }
+
+    /* ── Page ── */
+    .page {
+      position: relative; z-index: 2;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px 80px;
+      gap: 0;
+    }
+
+    /* ── Logo / Title ── */
+    .logo {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: clamp(3rem, 9vw, 7.5rem);
+      color: var(--white);
+      text-align: center;
+      line-height: 1;
+      letter-spacing: 0.01em;
+      text-transform: uppercase;
+      -webkit-text-stroke: 4px var(--outline);
+      paint-order: stroke fill;
+      text-shadow:
+        4px 4px 0 var(--blue-dark),
+        8px 8px 0 var(--blue-mid),
+        0 0 40px rgba(77,184,255,0.6);
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(-30px) scale(0.9);
+      animation: popIn 0.7s 0.1s cubic-bezier(.34,1.56,.64,1) forwards;
+    }
+
+    .logo .icy { color: var(--blue-light); }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /* ── Video container ── */
+    .video-wrap {
+      width: 100%;
+      max-width: 960px;
+      opacity: 0;
+      transform: translateY(30px) scale(0.96);
+      animation: popIn 0.8s 0.65s cubic-bezier(.34,1.3,.64,1) forwards;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .video-main { flex: 1; min-width: 0; }
+
+    /* ── Arrow buttons ── */
+    .arrow-btn {
+      flex-shrink: 0;
+      width: 58px; height: 58px;
+      border-radius: 50%;
+      background: var(--blue-light);
+      border: 4px solid var(--outline);
+      box-shadow: 4px 4px 0 var(--outline);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(.34,1.56,.64,1), box-shadow 0.12s;
+      user-select: none;
+    }
+    .arrow-btn:hover {
+      transform: scale(1.15) translateY(-2px);
+      box-shadow: 6px 6px 0 var(--outline);
+    }
+    .arrow-btn:active {
+      transform: scale(0.93);
+      box-shadow: 2px 2px 0 var(--outline);
+    }
+    .arrow-btn svg {
+      width: 26px; height: 26px;
+      stroke: var(--outline);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    .arrow-btn.disabled {
+      opacity: 0.35;
+      pointer-events: none;
+    }
+
+    /* ── Slide counter ── */
+    .counter {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.15em;
+      color: var(--white);
+      text-align: center;
+      margin-top: 14px;
+      -webkit-text-stroke: 1px var(--outline);
+      text-shadow: 2px 2px 0 var(--outline);
+      opacity: 0;
+      animation: rise 0.5s 1.1s forwards;
+    }
+
+    /* Cartoon card shell */
+    .video-card {
+      background: var(--blue-mid);
+      border: 4px solid var(--outline);
+      border-radius: 24px;
+      box-shadow:
+        6px 6px 0 var(--outline),
+        12px 12px 0 rgba(10,31,78,0.4);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Card top bar */
+    .card-bar {
+      background: var(--blue-light);
+      border-bottom: 4px solid var(--outline);
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-bar .dot {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      border: 2.5px solid var(--outline);
+    }
+    .dot.d1 { background: #ff5f5f; }
+    .dot.d2 { background: #ffcc00; }
+    .dot.d3 { background: #4dff91; }
+
+    .card-bar .bar-title {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.85rem;
+      color: var(--outline);
+      letter-spacing: 0.08em;
+      margin-left: 6px;
+    }
+
+    /* Video itself */
+    .video-inner {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: var(--blue-dark);
+    }
+
+    .video-inner iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      border: none;
+    }
+
+    /* ── Ticker ── */
+    .ticker-wrap {
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      z-index: 10;
+      background: var(--blue-light);
+      border-top: 4px solid var(--outline);
+      overflow: hidden;
+      height: 36px;
+      display: flex;
+      align-items: center;
+    }
+
+    .ticker-track {
+      display: flex;
+      white-space: nowrap;
+      animation: ticker 14s linear infinite;
+    }
+
+    .ticker-item {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.78rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--outline);
+      padding: 0 52px;
+    }
+    .ticker-item::before { content: '❄ '; }
+
+
+
+    /* ── Animations ── */
+    @keyframes popIn {
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    @keyframes rise {
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes ticker {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    #img-lightbox.open {
+      opacity: 1 !important;
+      pointer-events: all !important;
+    }
+    .roadmap-btn {
+      position: fixed;
+      top: 24px; left: 24px;
+      z-index: 20;
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--outline);
+      background: var(--blue-light);
+      border: 3px solid var(--outline);
+      border-radius: 12px;
+      padding: 9px 18px;
+      box-shadow: 4px 4px 0 var(--outline);
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(.34,1.56,.64,1), box-shadow 0.12s;
+      opacity: 0;
+      animation: rise 0.5s 0.2s forwards;
+    }
+    .roadmap-btn:hover {
+      transform: scale(1.07) translateY(-2px);
+      box-shadow: 6px 6px 0 var(--outline);
+    }
+    .roadmap-btn:active {
+      transform: scale(0.95);
+      box-shadow: 2px 2px 0 var(--outline);
+    }
+
+    /* ── Modal backdrop ── */
+    .modal-backdrop {
+      position: fixed; inset: 0; z-index: 30;
+      background: rgba(10, 31, 78, 0.7);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ── Modal card ── */
+    .modal {
+      background: var(--blue-dark);
+      border: 4px solid var(--outline);
+      border-radius: 24px;
+      box-shadow: 8px 8px 0 var(--outline);
+      max-width: 640px;
+      width: 100%;
+      padding: 40px 38px 36px;
+      transform: scale(0.88) translateY(20px);
+      transition: transform 0.25s cubic-bezier(.34,1.4,.64,1);
+      position: relative;
+    }
+    .modal-backdrop.open .modal {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .modal-title {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--blue-light);
+      -webkit-text-stroke: 1.5px var(--outline);
+      text-shadow: 3px 3px 0 var(--outline);
+    }
+
+    .modal-version {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--outline);
+      background: var(--blue-light);
+      border: 2.5px solid var(--outline);
+      border-radius: 8px;
+      padding: 4px 10px;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: var(--blue-mid);
+      border: 3px solid var(--outline);
+      box-shadow: 2px 2px 0 var(--outline);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 1rem;
+      color: var(--white);
+      transition: transform 0.12s cubic-bezier(.34,1.56,.64,1);
+    }
+    .modal-close:hover { transform: scale(1.15) rotate(10deg); }
+
+    .modal-divider {
+      width: 100%; height: 3px;
+      background: var(--blue-mid);
+      border-radius: 2px;
+      margin-bottom: 20px;
+    }
+
+    .roadmap-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      margin-bottom: 18px;
+    }
+    .roadmap-item:last-child { margin-bottom: 0; }
+
+    .item-badge {
+      flex-shrink: 0;
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 8px;
+      border: 2.5px solid var(--outline);
+      box-shadow: 2px 2px 0 var(--outline);
+      margin-top: 2px;
+    }
+    .badge-wip  { background: #ffcc00; color: var(--outline); }
+    .badge-soon { background: var(--blue-light); color: var(--outline); }
+
+    .item-text {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.04em;
+      color: var(--white);
+      line-height: 1.5;
+    }
+    .item-text span {
+      display: block;
+      font-size: 0.72rem;
+      color: var(--blue-pale);
+      margin-top: 3px;
+      letter-spacing: 0.06em;
+    }
+
+    .stats-btn {
+      position: fixed;
+      top: 72px; left: 24px;
+      z-index: 20;
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--outline);
+      background: var(--blue-light);
+      border: 3px solid var(--outline);
+      border-radius: 12px;
+      padding: 9px 18px;
+      box-shadow: 4px 4px 0 var(--outline);
+      cursor: pointer;
+      transition: transform 0.12s cubic-bezier(.34,1.56,.64,1), box-shadow 0.12s;
+      opacity: 0;
+      animation: rise 0.5s 0.3s forwards;
+    }
+    .stats-btn:hover {
+      transform: scale(1.07) translateY(-2px);
+      box-shadow: 6px 6px 0 var(--outline);
+    }
+    .stats-btn:active {
+      transform: scale(0.95);
+      box-shadow: 2px 2px 0 var(--outline);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .stat-card {
+      background: var(--blue-mid);
+      border: 3px solid var(--outline);
+      border-radius: 16px;
+      box-shadow: 4px 4px 0 var(--outline);
+      padding: 22px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-value {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 2.6rem;
+      color: var(--blue-light);
+      -webkit-text-stroke: 1.5px var(--outline);
+      text-shadow: 3px 3px 0 var(--outline);
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--blue-pale);
+    }
+
+    /* ── Version history dropdown ── */
+    .version-wrap {
+      position: relative;
+      display: inline-block;
+    }
+
+    .modal-version {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.15em;
+      color: var(--outline);
+      background: var(--blue-light);
+      border: 2.5px solid var(--outline);
+      border-radius: 8px;
+      padding: 4px 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.1s cubic-bezier(.34,1.56,.64,1), box-shadow 0.1s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-version:hover {
+      transform: scale(1.07);
+      box-shadow: 2px 2px 0 var(--outline);
+    }
+    .modal-version .chevron {
+      display: inline-block;
+      transition: transform 0.2s;
+      font-style: normal;
+      font-size: 0.6rem;
+    }
+    .version-wrap.open .chevron { transform: rotate(180deg); }
+
+    .version-dropdown {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      background: var(--blue-dark);
+      border: 3px solid var(--outline);
+      border-radius: 14px;
+      box-shadow: 5px 5px 0 var(--outline);
+      min-width: 240px;
+      z-index: 100;
+      overflow: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-6px) scale(0.96);
+      transition: opacity 0.18s, transform 0.18s cubic-bezier(.34,1.3,.64,1);
+    }
+    .version-wrap.open .version-dropdown {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0) scale(1);
+    }
+
+    .version-entry {
+      padding: 12px 16px;
+      border-bottom: 2px solid var(--blue-mid);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .version-entry:last-child { border-bottom: none; }
+
+    .version-entry-tag {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: var(--blue-light);
+      -webkit-text-stroke: 0.5px var(--outline);
+    }
+
+    .version-entry-notes {
+      font-family: 'Bagel Fat One', sans-serif;
+      font-size: 0.68rem;
+      letter-spacing: 0.08em;
+      color: var(--blue-pale);
+      line-height: 1.5;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .logo { font-size: clamp(2.4rem, 13vw, 3.5rem); -webkit-text-stroke: 3px var(--outline); }
+      .page { padding: 60px 14px 60px; }
+      .video-wrap { gap: 10px; }
+      .arrow-btn { width: 44px; height: 44px; }
+      .arrow-btn svg { width: 20px; height: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background -->
+  <div class="bg"></div>
+  <div class="bg-overlay"></div>
+
+  <main class="page">
+
+    <h1 class="logo"><span class="icy">Icy</span> Animations</h1>
+
+    <div class="video-wrap">
+
+      <!-- Left arrow -->
+      <button class="arrow-btn" id="prev-btn" onclick="changeVideo(-1)" aria-label="Previous video">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <!-- Video card -->
+      <div class="video-main">
+        <div class="video-card">
+          <div class="card-bar">
+            <div class="dot d1"></div>
+            <div class="dot d2"></div>
+            <div class="dot d3"></div>
+            <span class="bar-title" id="bar-title">Icy Animations — Now Playing</span>
+          </div>
+          <div class="video-inner">
+            <iframe id="js_video_iframe"
+              src="https://jumpshare.com/embed/k5zxqorFBGj7mc7MaAqQ"
+              frameborder="0"
+              webkitallowfullscreen mozallowfullscreen allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+        <p class="counter" id="counter">1 / 3</p>
+      </div>
+
+      <!-- Right arrow -->
+      <button class="arrow-btn" id="next-btn" onclick="changeVideo(1)" aria-label="Next video">
+        <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+
+    </div>
+
+    <!-- Roadmap button -->
+    <button class="roadmap-btn" onclick="document.getElementById('roadmap-modal').classList.add('open')">
+      Roadmap
+    </button>
+
+    <!-- Stats button -->
+    <button class="stats-btn" onclick="document.getElementById('stats-modal').classList.add('open')">
+      Stats
+    </button>
+
+    <!-- Stats modal -->
+    <div class="modal-backdrop" id="stats-modal" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="modal">
+        <button class="modal-close" onclick="document.getElementById('stats-modal').classList.remove('open')">x</button>
+        <div class="modal-top">
+          <span class="modal-title">Stats</span>
+          <div class="version-wrap" id="stats-ver-wrap">
+            <span class="modal-version" onclick="document.getElementById('stats-ver-wrap').classList.toggle('open')">v0.12 <i class="chevron">▼</i></span>
+            <div class="version-dropdown">
+              <div class="version-entry">
+                <div class="version-entry-tag">v0.12</div>
+                <div class="version-entry-notes">Pre-Alpha — Introduced a new stat bar, different QoL changes, and fixed a few bugs.</div>
+              </div>
+              <div class="version-entry">
+                <div class="version-entry-tag">v0.11</div>
+                <div class="version-entry-notes">Pre-Alpha — Officially released the ultimate first version of Icy Animations.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-divider"></div>
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Videos Out</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">5h</div>
+            <div class="stat-label">Total Runtime</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">2</div>
+            <div class="stat-label">In Progress</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="days-counter">0</div>
+            <div class="stat-label">Days Since Launch</div>
+          </div>
+          <div class="stat-card" style="grid-column: 1 / -1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div class="stat-label">Alpha Release</div>
+              <div class="stat-label" id="alpha-date">Apr 1, 2026</div>
+            </div>
+            <div style="width:100%;height:22px;background:var(--blue-dark);border:2.5px solid var(--outline);border-radius:999px;overflow:hidden;box-shadow:inset 2px 2px 0 rgba(0,0,0,0.3);">
+              <div id="alpha-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#4db8ff,#a8d8ff);border-radius:999px;transition:width 1s cubic-bezier(.34,1.2,.64,1);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:repeating-linear-gradient(90deg,transparent,transparent 10px,rgba(255,255,255,0.15) 10px,rgba(255,255,255,0.15) 20px);"></div>
+              </div>
+            </div>
+            <div style="display:flex;justify-content:space-between;margin-top:7px;">
+              <div class="stat-label" id="alpha-pct">0%</div>
+              <div class="stat-label" id="alpha-status">Loading...</div>
+            </div>
+          </div>
+          <div class="stat-card" style="grid-column: 1 / -1;">
+            <div class="stat-value" style="font-size:1.1rem; -webkit-text-stroke:1px var(--outline);">Mar 16, 2026</div>
+            <div class="stat-label">First Video Dropped</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Image lightbox -->
+    <div id="img-lightbox" onclick="this.classList.remove('open')" style="position:fixed;inset:0;z-index:50;background:rgba(10,31,78,0.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity 0.2s;">
+      <div onclick="event.stopPropagation()" style="position:relative;max-width:90vw;max-height:90vh;">
+        <img src="https://i.postimg.cc/hGDN3WCq/map.png" alt="Roadmap expanded" style="max-width:100%;max-height:85vh;border-radius:16px;border:4px solid var(--outline);box-shadow:8px 8px 0 var(--outline);display:block;" />
+        <button onclick="document.getElementById('img-lightbox').classList.remove('open')" style="position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:3px solid var(--outline);box-shadow:2px 2px 0 var(--outline);font-family:'Bagel Fat One',sans-serif;font-size:0.85rem;color:var(--outline);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.12s cubic-bezier(.34,1.56,.64,1);" onmouseover="this.style.transform='scale(1.15) rotate(10deg)'" onmouseout="this.style.transform='scale(1)'">x</button>
+      </div>
+    </div>
+
+    <!-- Roadmap modal -->
+    <div class="modal-backdrop" id="roadmap-modal" onclick="handleBackdropClick(event)">
+      <div class="modal">
+        <button class="modal-close" onclick="document.getElementById('roadmap-modal').classList.remove('open')">x</button>
+        <div class="modal-top">
+          <span class="modal-title">Roadmap</span>
+          <div class="version-wrap" id="road-ver-wrap">
+            <span class="modal-version" onclick="document.getElementById('road-ver-wrap').classList.toggle('open')">v0.12 <i class="chevron">▼</i></span>
+            <div class="version-dropdown">
+              <div class="version-entry">
+                <div class="version-entry-tag">v0.12</div>
+                <div class="version-entry-notes">Pre-Alpha — Introduced a new stat bar, different QoL changes, and fixed a few bugs.</div>
+              </div>
+              <div class="version-entry">
+                <div class="version-entry-tag">v0.11</div>
+                <div class="version-entry-notes">Pre-Alpha — Officially released the ultimate first version of Icy Animations.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-divider"></div>
+
+        <div style="position:relative;display:inline-block;width:100%;">
+          <img src="https://i.postimg.cc/hGDN3WCq/map.png" alt="Roadmap" style="width:100%;border-radius:12px;border:3px solid var(--outline);box-shadow:4px 4px 0 var(--outline);display:block;" />
+          <button onclick="document.getElementById('img-lightbox').classList.add('open')" style="position:absolute;bottom:10px;right:10px;font-family:'Bagel Fat One',sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--blue-light);color:var(--outline);border:2.5px solid var(--outline);border-radius:8px;padding:5px 11px;box-shadow:2px 2px 0 var(--outline);cursor:pointer;transition:transform 0.12s cubic-bezier(.34,1.56,.64,1);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">Expand</button>
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Ticker -->
+  <div class="ticker-wrap">
+    <div class="ticker-track">
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+    </div>
+  </div>
+
+  <script>
+    const videos = [
+      { src: 'https://jumpshare.com/embed/k5zxqorFBGj7mc7MaAqQ', title: 'Icy Animations — Video 1' },
+      { src: 'https://jumpshare.com/embed/MdSF1gVLncLjlOCpAlls', title: 'Icy Animations — Video 2' },
+      { src: 'https://jumpshare.com/embed/7khO6NR609bJHEaYRrg4', title: 'Icy Animations — Video 3' }
+    ];
+    let current = 0;
+
+    function changeVideo(dir) {
+      const next = current + dir;
+      if (next < 0 || next >= videos.length) return;
+      current = next;
+
+      const iframe = document.getElementById('js_video_iframe');
+      const barTitle = document.getElementById('bar-title');
+      const counter = document.getElementById('counter');
+      const prevBtn = document.getElementById('prev-btn');
+      const nextBtn = document.getElementById('next-btn');
+
+      iframe.src = videos[current].src;
+      barTitle.textContent = videos[current].title;
+      counter.textContent = (current + 1) + ' / ' + videos.length;
+
+      prevBtn.classList.toggle('disabled', current === 0);
+      nextBtn.classList.toggle('disabled', current === videos.length - 1);
+    }
+
+    // Keyboard support
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'ArrowLeft')  changeVideo(-1);
+      if (e.key === 'ArrowRight') changeVideo(1);
+    });
+
+    // Close modal on backdrop click
+    function handleBackdropClick(e) {
+      if (e.target === document.getElementById('roadmap-modal')) {
+        document.getElementById('roadmap-modal').classList.remove('open');
+      }
+    }
+
+    // Close version dropdowns on outside click
+    document.addEventListener('click', function(e) {
+      ['stats-ver-wrap','road-ver-wrap'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && !el.contains(e.target)) el.classList.remove('open');
+      });
+    });
+
+    // Alpha release progress bar
+    const alphaDate = new Date('2026-04-01');
+    const launchDate = new Date('2026-03-16');
+    const nowDate = new Date();
+    const totalDays = alphaDate - launchDate;
+    const elapsed = Math.min(nowDate - launchDate, totalDays);
+    const pct = Math.max(0, Math.min(100, Math.round((elapsed / totalDays) * 100)));
+    setTimeout(() => {
+      document.getElementById('alpha-bar').style.width = pct + '%';
+      document.getElementById('alpha-pct').textContent = pct + '%';
+      document.getElementById('alpha-status').textContent = pct >= 100 ? 'Alpha Released!' : 'Coming Apr 1';
+    }, 300);
+    const launch = new Date('2026-03-16');
+    const today = new Date();
+    const days = Math.floor((today - launch) / (1000 * 60 * 60 * 24));
+    document.getElementById('days-counter').textContent = days;
+
+    // Set initial state
+    document.getElementById('prev-btn').classList.add('disabled');
+  </script>
+</body>
+</html>
