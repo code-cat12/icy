@@ -236,6 +236,8 @@
       100% { transform: translateX(-50%); }
     }
 
+    #note-tooltip.show { display: block !important; }
+
     #img-lightbox.open {
       opacity: 1 !important;
       pointer-events: all !important;
@@ -568,8 +570,10 @@
             <div class="dot d1"></div>
             <div class="dot d2"></div>
             <div class="dot d3"></div>
-            <span class="bar-title" id="bar-title">Icy Animations — Now Playing</span>
+            <span class="bar-title" id="bar-title">Looping The Rooms V2</span>
+            <button id="note-btn" onclick="document.getElementById('note-tooltip').classList.toggle('show')" style="display:none;margin-left:auto;font-family:'Bagel Fat One',sans-serif;font-size:0.65rem;letter-spacing:0.08em;text-transform:uppercase;background:var(--blue-dark);color:var(--white);border:2px solid var(--outline);border-radius:7px;padding:3px 10px;cursor:pointer;box-shadow:2px 2px 0 var(--outline);flex-shrink:0;transition:transform 0.1s cubic-bezier(.34,1.56,.64,1);" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">Note</button>
           </div>
+          <div id="note-tooltip" style="display:none;background:var(--blue-dark);border:2.5px solid var(--outline);border-top:none;padding:10px 16px;font-family:'Bagel Fat One',sans-serif;font-size:0.72rem;letter-spacing:0.06em;color:var(--blue-pale);line-height:1.5;"></div>
           <div class="video-inner">
             <iframe id="js_video_iframe"
               src="https://jumpshare.com/embed/k5zxqorFBGj7mc7MaAqQ"
@@ -578,7 +582,7 @@
             </iframe>
           </div>
         </div>
-        <p class="counter" id="counter">1 / 3</p>
+        <p class="counter" id="counter">1 / 5</p>
       </div>
 
       <!-- Right arrow -->
@@ -609,11 +613,11 @@
             <div class="version-dropdown">
               <div class="version-entry">
                 <div class="version-entry-tag">v0.12</div>
-                <div class="version-entry-notes">Pre-Alpha — Introduced a new stat bar, reworked the Looping the Rooms animation, different QoL changes, and fixed a few bugs.</div>
+                <div class="version-entry-notes">Pre-Alpha — Introduced a new stat bar, different QoL changes, and fixed a few bugs.</div>
               </div>
               <div class="version-entry">
                 <div class="version-entry-tag">v0.11</div>
-                <div class="version-entry-notes">Pre-Alpha — Officially released the ultimate pre-alpha version of Icy Animations.</div>
+                <div class="version-entry-notes">Pre-Alpha — Officially released the ultimate first version of Icy Animations.</div>
               </div>
             </div>
           </div>
@@ -662,7 +666,7 @@
     <!-- Image lightbox -->
     <div id="img-lightbox" onclick="this.classList.remove('open')" style="position:fixed;inset:0;z-index:50;background:rgba(10,31,78,0.85);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:32px;opacity:0;pointer-events:none;transition:opacity 0.2s;">
       <div onclick="event.stopPropagation()" style="position:relative;max-width:90vw;max-height:90vh;">
-        <img src="https://i.postimg.cc/cHrzNbDC/mapp.png" alt="Roadmap expanded" style="max-width:100%;max-height:85vh;border-radius:16px;border:4px solid var(--outline);box-shadow:8px 8px 0 var(--outline);display:block;" />
+        <img src="https://i.postimg.cc/xj6j0NNn/mappp.png" alt="Roadmap expanded" style="max-width:100%;max-height:85vh;border-radius:16px;border:4px solid var(--outline);box-shadow:8px 8px 0 var(--outline);display:block;" />
         <button onclick="document.getElementById('img-lightbox').classList.remove('open')" style="position:absolute;top:-14px;right:-14px;width:36px;height:36px;border-radius:50%;background:var(--blue-light);border:3px solid var(--outline);box-shadow:2px 2px 0 var(--outline);font-family:'Bagel Fat One',sans-serif;font-size:0.85rem;color:var(--outline);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.12s cubic-bezier(.34,1.56,.64,1);" onmouseover="this.style.transform='scale(1.15) rotate(10deg)'" onmouseout="this.style.transform='scale(1)'">x</button>
       </div>
     </div>
@@ -690,7 +694,7 @@
         <div class="modal-divider"></div>
 
         <div style="position:relative;display:inline-block;width:100%;">
-          <img src="https://i.postimg.cc/cHrzNbDC/mapp.png" alt="Roadmap" style="width:100%;border-radius:12px;border:3px solid var(--outline);box-shadow:4px 4px 0 var(--outline);display:block;" />
+          <img src="https://i.postimg.cc/xj6j0NNn/mappp.png" alt="Roadmap" style="width:100%;border-radius:12px;border:3px solid var(--outline);box-shadow:4px 4px 0 var(--outline);display:block;" />
           <button onclick="document.getElementById('img-lightbox').classList.add('open')" style="position:absolute;bottom:10px;right:10px;font-family:'Bagel Fat One',sans-serif;font-size:0.7rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--blue-light);color:var(--outline);border:2.5px solid var(--outline);border-radius:8px;padding:5px 11px;box-shadow:2px 2px 0 var(--outline);cursor:pointer;transition:transform 0.12s cubic-bezier(.34,1.56,.64,1);" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">Expand</button>
         </div>
 
@@ -710,14 +714,24 @@
       <span class="ticker-item">Now Playing</span>
       <span class="ticker-item">Icy Animations</span>
       <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
+      <span class="ticker-item">Icy Animations</span>
+      <span class="ticker-item">Now Playing</span>
     </div>
   </div>
 
   <script>
     const videos = [
-      { src: 'https://jumpshare.com/embed/k5zxqorFBGj7mc7MaAqQ', title: 'Icy Animations — Video 1' },
-      { src: 'https://jumpshare.com/embed/MdSF1gVLncLjlOCpAlls', title: 'Icy Animations — Video 2' },
-      { src: 'https://jumpshare.com/embed/7khO6NR609bJHEaYRrg4', title: 'Icy Animations — Video 3' }
+      { src: 'https://jumpshare.com/embed/k5zxqorFBGj7mc7MaAqQ', title: 'Looping The Rooms V2', note: null },
+      { src: 'https://jumpshare.com/embed/MdSF1gVLncLjlOCpAlls', title: 'Shucks', note: null },
+      { src: 'https://jumpshare.com/embed/7khO6NR609bJHEaYRrg4', title: 'Backrooms Jumpstyle', note: null },
+      { src: 'https://jumpshare.com/embed/MnA0fJlkt4gOtg2Uhrym', title: 'Retry Now (Chorus)', note: 'This animation is imperfect due to the Roblox avatars not working well with the animation and the editing may cause issues.' },
+      { src: 'https://jumpshare.com/embed/kiidUmiWJqF3H2Amb0F3', title: 'Retry Now (Ending)', note: 'This animation is imperfect due to the Roblox avatars not working well with the animation and the editing may cause issues.' }
     ];
     let current = 0;
 
@@ -735,6 +749,19 @@
       iframe.src = videos[current].src;
       barTitle.textContent = videos[current].title;
       counter.textContent = (current + 1) + ' / ' + videos.length;
+
+      const noteBtn = document.getElementById('note-btn');
+      const noteTooltip = document.getElementById('note-tooltip');
+      if (videos[current].note) {
+        noteBtn.style.display = 'inline-block';
+        noteTooltip.textContent = videos[current].note;
+        noteTooltip.style.display = 'none';
+        noteTooltip.classList.remove('show');
+      } else {
+        noteBtn.style.display = 'none';
+        noteTooltip.style.display = 'none';
+        noteTooltip.classList.remove('show');
+      }
 
       prevBtn.classList.toggle('disabled', current === 0);
       nextBtn.classList.toggle('disabled', current === videos.length - 1);
